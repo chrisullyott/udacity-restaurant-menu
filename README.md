@@ -5,23 +5,20 @@ A simple web app made with Python.
 ## Dependencies
 
 **Vagrant**
+
 https://www.vagrantup.com/
 
 **SQL Alchemy**
+
 http://www.sqlalchemy.org/
 
 **Flask**
+
 http://flask.pocoo.org/
 
 ## Run
 
-Start the vagrant machine:
-
-```
-$ vagrant up
-```
-
-Run the file finalproject.py:
+Run the file finalproject.py from within a Vagrant:
 
 ```
 $ vagrant up
