@@ -55,5 +55,5 @@ http://localhost:5000/restaurants/<RESTAURANT ID>/menu/json/
 List a single menu item:
 
 ```
-http://localhost:5000/restaurants/<RESTAURANT ID>/menu/<ITEM_ID>/json/
+http://localhost:5000/restaurants/<RESTAURANT ID>/menu/<ITEM ID>/json/
 ```
