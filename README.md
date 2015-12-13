@@ -21,9 +21,12 @@ Start the vagrant machine:
 $ vagrant up
 ```
 
-Run `finalproject.py`:
+Run the file finalproject.py:
 
 ```
+$ vagrant up
+$ vagrant ssh
+$ cd <SYNCED PATH TO REPOSITORY>
 $ python finalproject.py
 ```
 
@@ -46,11 +49,11 @@ http://localhost:5000/restaurants/json
 List all menu items for a given RESTAURANT_ID:
 
 ```
-http://localhost:5000/restaurants/<RESTAURANT_ID>/menu/json/
+http://localhost:5000/restaurants/<RESTAURANT ID>/menu/json/
 ```
 
 List a single menu item:
 
 ```
-http://localhost:5000/restaurants/<RESTAURANT_ID>/menu/<ITEM_ID>/json/
+http://localhost:5000/restaurants/<RESTAURANT ID>/menu/<ITEM_ID>/json/
 ```
