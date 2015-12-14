@@ -20,7 +20,7 @@ http://www.sqlalchemy.org/
 
 http://flask.pocoo.org/
 
-## Set up
+## Setup
 
 Set up VirtualBox and Vagrant to create your own server. With Vagrant installed, run:
 
@@ -29,8 +29,6 @@ $ vagrant up
 $ vagrant ssh
 $ cd <SYNCED PATH TO REPOSITORY>
 ```
-
-## Setup
 
 Initialize and fill the database with these scripts.
 
