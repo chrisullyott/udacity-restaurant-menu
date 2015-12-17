@@ -8,6 +8,8 @@
       <div class="two-thirds column">
         <h3><a href="{{url_for('showMenu', restaurant_id=restaurant.id)}}">{{restaurant.name}}</a></h3>
       </div>
+
+      {% if restaurant.user_id == login_session.user_id %}
       <div class="one-third column right">
         <ul class="button-list">
           <li>
@@ -33,6 +35,7 @@
           </li>
         </ul>
       </div>
+      {% endif %}
 
     </div>
   {% endfor %}

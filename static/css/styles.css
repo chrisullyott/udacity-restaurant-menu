@@ -99,3 +99,21 @@ hr.separator {
 input[type=text],input[type=textarea] {
 	width:100%;
 }
+
+.owner-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center center;
+}
+
+.owner-photo img {
+  max-width: 100%;
+}
+
+.fineprint {
+  font-size: 85%;
+  color: #999;
+}

@@ -2,6 +2,8 @@
 
 A simple web app made with Python.
 
+![screenshot](http://downloads.chrisullyott.com/courses/udacity/full-stack/finalproject-demo.jpg)
+
 ## Dependencies
 
 **VirtualBox**
@@ -64,11 +66,11 @@ http://localhost:5000/restaurants/json
 List all menu items for a given RESTAURANT_ID:
 
 ```
-http://localhost:5000/restaurants/<RESTAURANT ID>/menu/json/
+http://localhost:5000/restaurants/<RESTAURANT ID>/menu/json
 ```
 
 List a single menu item:
 
 ```
-http://localhost:5000/restaurants/<RESTAURANT ID>/menu/<ITEM ID>/json/
+http://localhost:5000/restaurants/<RESTAURANT ID>/menu/<ITEM ID>/json
 ```

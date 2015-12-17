@@ -16,8 +16,8 @@
     </div>
     <div class="one-half column right">
     {% block listActions %}
+      <ul class="button-list">
       {% if view == 'showRestaurants' %}
-        <ul class="button-list">
           <li>
             <a class="button" href="{{url_for('newRestaurant')}}">
               <span class="icon">
@@ -28,10 +28,8 @@
               New Menu
             </a>
           </li>
-        </ul>
       {% endif %}
       {% if view == 'showMenu' %}
-        <ul class="button-list">
           <li>
             <a class="button" href="{{url_for('showRestaurants')}}">&larr; Go Back</a>
           </li>
@@ -45,14 +43,30 @@
               New Item
             </a>
           </li>
-        </ul>
       {% endif %}
+      {% if 'username' not in login_session %}
+      <!-- LOGIN  -->
+      <li>
+        <a class="button" href="{{url_for('showLogin')}}">Login</a>
+      </li>
+      {% else %}
+      <!-- LOGOUT (username: {{login_session.username}})  -->
+      <li>
+        <a class="button" href="{{url_for('disconnect')}}">Logout</a>
+      </li>
+      {% endif %}
+      </ul><!-- .button-list -->
     {% endblock %}
     </div>
   </div>
 
   <div class="container" id="content">
   {% block content %}
+
+    {% if view == 'login' %}
+        {% include '_messages.html' %}
+        {% include 'login.html' %}
+    {% endif %}
 
     {% if view == 'showRestaurants' %}
         {% include '_messages.html' %}
