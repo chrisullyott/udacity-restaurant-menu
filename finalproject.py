@@ -25,6 +25,9 @@ import requests
 from flask import make_response
 CLIENT_ID = json.loads(open('oauth/google_client_secrets.json', 'r').read())['web']['client_id']
 
+# !libraries
+import dicttoxml
+
 # !helpers
 from pprint import pprint
 
@@ -34,7 +37,7 @@ from pprint import pprint
 def showLogin():
   state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
   login_session['state'] = state
-  return render_template('_page.html', title='Login, friend!', view='login', STATE=state)
+  return render_template('_page.html', title='Log in, friend!', view='login', STATE=state)
 
 # Handle oauth connect
 @app.route('/gconnect', methods=['POST'])
@@ -411,17 +414,50 @@ def deleteMenuItem(restaurant_id, menu_item_id):
 @app.route('/restaurants/json')
 def showRestaurantsJSON():
     restaurants = session.query(Restaurant).all()
-    return jsonify(Restaurants=[r.serialize for r in restaurants])
+    json = jsonify(Restaurants=[r.serialize for r in restaurants])
+    response = make_response(json, 200)
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
+@app.route('/restaurants/xml')
+def showRestaurantsXML():
+    restaurants = session.query(Restaurant).all()
+    xml = dicttoxml.dicttoxml([r.serialize for r in restaurants])
+    response = make_response(xml, 200)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
 
 @app.route('/restaurants/<int:restaurant_id>/menu/json')
 def restaurantMenuJSON(restaurant_id):
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id)
-    return jsonify(MenuItems=[i.serialize for i in items])
+    json = jsonify(MenuItems=[i.serialize for i in items])
+    response = make_response(json, 200)
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
+@app.route('/restaurants/<int:restaurant_id>/menu/xml')
+def restaurantMenuXML(restaurant_id):
+    items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id)
+    xml = dicttoxml.dicttoxml([i.serialize for i in items])
+    response = make_response(xml, 200)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
 
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_item_id>/json')
 def restaurantMenuItemJSON(restaurant_id, menu_item_id):
     item = session.query(MenuItem).filter_by(id=menu_item_id).one()
-    return jsonify(Item=[item.serialize])
+    json = jsonify(Item=[item.serialize])
+    response = make_response(json, 200)
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
+@app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_item_id>/xml')
+def restaurantMenuItemXML(restaurant_id, menu_item_id):
+    item = session.query(MenuItem).filter_by(id=menu_item_id).one()
+    xml = dicttoxml.dicttoxml([item.serialize])
+    response = make_response(xml, 200)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
 
 # !run
 if __name__ == '__main__':

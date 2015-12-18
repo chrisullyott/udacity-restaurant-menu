@@ -53,24 +53,27 @@ The app runs on port `5000`:
 http://localhost:5000/
 ```
 
-## JSON API Endpoints
+## API Endpoints
 
-A JSON API is accessible within the app, available at the following endpoints:
+Available in JSON and XML at the following endpoints:
 
 List all restaurants:
 
 ```
 http://localhost:5000/restaurants/json
+http://localhost:5000/restaurants/xml
 ```
 
 List all menu items for a given RESTAURANT_ID:
 
 ```
 http://localhost:5000/restaurants/<RESTAURANT ID>/menu/json
+http://localhost:5000/restaurants/<RESTAURANT ID>/menu/xml
 ```
 
 List a single menu item:
 
 ```
 http://localhost:5000/restaurants/<RESTAURANT ID>/menu/<ITEM ID>/json
+http://localhost:5000/restaurants/<RESTAURANT ID>/menu/<ITEM ID>/xml
 ```
