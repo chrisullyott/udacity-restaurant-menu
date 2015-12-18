@@ -22,6 +22,10 @@ http://www.sqlalchemy.org/
 
 http://flask.pocoo.org/
 
+**dicttoxml**
+
+https://pypi.python.org/pypi/dicttoxml
+
 ## Setup
 
 Set up VirtualBox and Vagrant to create your own server. With Vagrant installed, run:
