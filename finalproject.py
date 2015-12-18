@@ -1,5 +1,6 @@
 # !flask
 from flask import Flask, render_template, url_for, request, redirect, flash, jsonify
+from functools import wraps
 app = Flask(__name__)
 
 # !sqlalchemy
@@ -32,12 +33,22 @@ import dicttoxml
 from pprint import pprint
 
 # !user login
+def login_required(f):
+  @wraps(f)
+  def decorated_function(*args, **kwargs):
+    if 'username' in login_session:
+      return f(*args, **kwargs)
+    else:
+      flash('Please log in first.')
+      return redirect('/login')
+  return decorated_function
+
 @app.route('/')
 @app.route('/login')
 def showLogin():
   state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
   login_session['state'] = state
-  return render_template('_page.html', title='Log in, friend!', view='login', STATE=state)
+  return render_template('_page.html', title='Hello friend!', view='login', STATE=state)
 
 # Handle oauth connect
 @app.route('/gconnect', methods=['POST'])
@@ -290,9 +301,8 @@ def showRestaurants():
   return render_template('_page.html', title='Restaurants', view='showRestaurants', restaurants=restaurants, login_session=login_session)
 
 @app.route('/restaurants/new', methods=['GET', 'POST'])
+@login_required
 def newRestaurant():
-  if 'username' not in login_session:
-    return redirect('/login')
   if request.method == 'POST':
     restaurant = Restaurant(name = request.form['name'].strip(), user_id = login_session['user_id'])
     session.add(restaurant)
@@ -303,14 +313,13 @@ def newRestaurant():
     return render_template('_page.html', title='New Restaurant', view='newRestaurant')
 
 @app.route('/restaurants/edit/<int:restaurant_id>', methods=['GET', 'POST'])
+@login_required
 def editRestaurant(restaurant_id):
   restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
   owner = getUserInfo(restaurant.user_id)
   if owner.id != login_session['user_id']:
     flash('You do not have access to edit %s.' % restaurant.name)
     return redirect(url_for('showRestaurants'))
-  if 'username' not in login_session:
-    return redirect('/login')
   if request.method == 'POST':
     if request.form['name']:
         restaurant.name = request.form['name'].strip()
@@ -323,14 +332,13 @@ def editRestaurant(restaurant_id):
     return render_template('_page.html', title='Edit Restaurant', view='editRestaurant', restaurant=restaurant)
 
 @app.route('/restaurants/delete/<int:restaurant_id>', methods=['GET', 'POST'])
+@login_required
 def deleteRestaurant(restaurant_id):
   restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
   owner = getUserInfo(restaurant.user_id)
   if owner.id != login_session['user_id']:
     flash('You do not have access to edit %s.' % restaurant.name)
     return redirect(url_for('showRestaurants'))
-  if 'username' not in login_session:
-    return redirect('/login')
   if request.method == 'POST':
     session.delete(restaurant)
     session.commit()
@@ -348,14 +356,13 @@ def showMenu(restaurant_id):
   return render_template('_page.html', title=restaurant.name, view='showMenu', restaurant=restaurant, items=items, owner=owner, login_session=login_session)
 
 @app.route('/restaurants/<int:restaurant_id>/menu/new', methods=['GET', 'POST'])
+@login_required
 def newMenuItem(restaurant_id):
   restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
   owner = getUserInfo(restaurant.user_id)
   if owner.id != login_session['user_id']:
     flash('You do not have access to edit %s.' % restaurant.name)
     return redirect(url_for('showRestaurants'))
-  if 'username' not in login_session:
-    return redirect('/login')
   if request.method == 'POST':
     newItem = MenuItem(
       name = request.form['name'].strip(),
@@ -371,14 +378,13 @@ def newMenuItem(restaurant_id):
     return render_template('_page.html', title='New Menu Item', view='newMenuItem', restaurant=restaurant)
 
 @app.route('/restaurants/<int:restaurant_id>/menu/edit/<int:menu_item_id>', methods=['GET', 'POST'])
+@login_required
 def editMenuItem(restaurant_id, menu_item_id):
   restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
   owner = getUserInfo(restaurant.user_id)
   if owner.id != login_session['user_id']:
     flash('You do not have access to edit %s.' % restaurant.name)
     return redirect(url_for('showRestaurants'))
-  if 'username' not in login_session:
-    return redirect('/login')
   item = session.query(MenuItem).filter_by(id=menu_item_id).one()
   if request.method == 'POST':
     item.name = request.form['name'].strip()
@@ -393,14 +399,13 @@ def editMenuItem(restaurant_id, menu_item_id):
     return render_template('_page.html', title='Edit Menu Item', view='editMenuItem', restaurant=restaurant, item=item)
 
 @app.route('/restaurants/<int:restaurant_id>/menu/delete/<int:menu_item_id>', methods=['GET', 'POST'])
+@login_required
 def deleteMenuItem(restaurant_id, menu_item_id):
   restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
   owner = getUserInfo(restaurant.user_id)
   if owner.id != login_session['user_id']:
     flash('You do not have access to edit %s.' % restaurant.name)
     return redirect(url_for('showRestaurants'))
-  if 'username' not in login_session:
-    return redirect('/login')
   item = session.query(MenuItem).filter_by(id=menu_item_id).one()
   if request.method == 'POST':
     session.delete(item)
