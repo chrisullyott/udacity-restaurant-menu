@@ -1,5 +1,6 @@
 # !flask
-from flask import Flask, render_template, url_for, request, redirect, flash, jsonify
+from flask import (Flask, render_template, url_for, request, redirect, flash,
+jsonify)
 from functools import wraps
 app = Flask(__name__)
 
@@ -24,7 +25,8 @@ import httplib2
 import json
 import requests
 from flask import make_response
-CLIENT_ID = json.loads(open('oauth/google_client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(
+  open('oauth/google_client_secrets.json', 'r').read())['web']['client_id']
 
 # !libraries
 import dicttoxml
@@ -46,9 +48,11 @@ def login_required(f):
 @app.route('/')
 @app.route('/login')
 def showLogin():
-  state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+  state = ''.join(random.choice(string.ascii_uppercase +
+    string.digits) for x in xrange(32))
   login_session['state'] = state
-  return render_template('_page.html', title='Hello friend!', view='login', STATE=state)
+  return render_template('_page.html', title='Hello friend!', view='login',
+    STATE=state)
 
 # Handle oauth connect
 @app.route('/gconnect', methods=['POST'])
@@ -65,17 +69,20 @@ def gconnect():
 
   # Upgrade authorization code to credentials object
   try:
-    oauth_flow = flow_from_clientsecrets('oauth/google_client_secrets.json', scope='')
+    oauth_flow = flow_from_clientsecrets('oauth/google_client_secrets.json',
+      scope='')
     oauth_flow.redirect_uri = 'postmessage'
     credentials = oauth_flow.step2_exchange(code)
   except FlowExchangeError:
-    response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
+    response = make_response(
+      json.dumps('Failed to upgrade the authorization code.'), 401)
     response.headers['Content-Type'] = 'application/json'
     return response
 
   # Check for valid access token.
   access_token = credentials.access_token
-  url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+  url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
+    % access_token)
   h = httplib2.Http()
   result = json.loads(h.request(url, 'GET')[1])
 
@@ -87,13 +94,15 @@ def gconnect():
   # Match access token to intended user
   gplus_id = credentials.id_token['sub']
   if result['user_id'] != gplus_id:
-    response = make_response(json.dumps("Token's user ID doesn't match given user ID."), 401)
+    response = make_response(
+      json.dumps("Token's user ID doesn't match given user ID."), 401)
     response.headers['Content-Type'] = 'application/json'
     return response
 
   # Verify that the access token is valid for this app.
   if result['issued_to'] != CLIENT_ID:
-    response = make_response(json.dumps("Token's client ID does not match app's."), 401)
+    response = make_response(
+      json.dumps("Token's client ID does not match app's."), 401)
     print "Token's client ID does not match an app token."
     response.headers['Content-Type'] = 'application/json'
     return response
@@ -159,9 +168,10 @@ def fbconnect():
   # Upgrade authorization code to credentials object
   print "Facebook access token received: %s" % access_token
 
-  app_id = json.loads(open('oauth/fb_client_secrets.json', 'r').read())['web']['app_id']
+  app_id = json.loads(
+    open('oauth/fb_client_secrets.json', 'r').read())['web']['app_id']
   app_secret = json.loads(
-      open('oauth/fb_client_secrets.json', 'r').read())['web']['app_secret']
+    open('oauth/fb_client_secrets.json', 'r').read())['web']['app_secret']
   url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
       app_id, app_secret, access_token)
   h = httplib2.Http()
@@ -183,7 +193,8 @@ def fbconnect():
   login_session['email'] = data["email"]
   login_session['facebook_id'] = data["id"]
 
-  # The token must be stored in the login_session in order to properly logout, let's strip out the information before the equals sign in our token
+  # The token must be stored in the login_session in order to properly logout,
+  # let's strip out the information before the equals sign in our token
   stored_token = token.split("=")[1]
   login_session['access_token'] = stored_token
 
@@ -235,11 +246,13 @@ def gdisconnect():
     del login_session['username']
     del login_session['email']
     del login_session['picture']
-    response = make_response(json.dumps('Successfully disconnected.'), 200)
+    response = make_response(
+      json.dumps('Successfully disconnected.'), 200)
     response.headers['Content-Type'] = 'application/json'
     return response
   else:
-  	response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+  	response = make_response(
+  	  json.dumps('Failed to revoke token for given user.', 400))
   	response.headers['Content-Type'] = 'application/json'
   	return response
 
